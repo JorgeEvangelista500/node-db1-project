@@ -1,5 +1,5 @@
 
-const res = require('express/lib/response')
+
 const db = require('../../data/db-config')
 
 const getAll = () => {
@@ -8,16 +8,17 @@ const getAll = () => {
 }
 
 const getById = id => {
-  return db('accounts').where({ id: id }).first()
+  return db('accounts').where( 'id', id ).first()
 }
 
-const create = account => {
-  return db('accounts').insert(account).then(account)
-  
+const create = async account => {
+  const [id] = await db('accounts').insert(account)
+  return getById(id)
 }
 
 const updateById = (id, account) => {
-  return db('accounts').where({ id:id }).update(account).then(account)
+  db('accounts').where({ id:id }).update(account).then(account)
+  return getById(id)
 }
 
 const deleteById = id => {
